@@ -22,8 +22,9 @@ const createWindow = () => {
     },
   });
 
+  //this controls if we have the inspector open or not
   mainWindow.setMenuBarVisibility(isDevelopment);
-
+  
   // and load the index.html of the app.
   //mainWindow.loadFile(__dirname, "./app/index.html")
   if (!isDevelopment) mainWindow.loadURL('file://' + path.join(__dirname, '..') + '/electron/app/index.html');

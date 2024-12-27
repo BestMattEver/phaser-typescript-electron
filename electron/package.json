@@ -7,7 +7,7 @@
   "scripts": {
     "copy": "yarn --cwd ../client build && node ./scripts/copy-from-client.js",
     "electron": "electron .",
-    "dev": "yarn --cwd ../client dev --host & yarn electron",
+    "dev": "yarn --cwd ../client dev --host & yarn electron --trace-warnings",
     "preview": "yarn copy && yarn electron",
     "app:dir": "electron-builder --dir",
     "app:dist": "electron-builder",
