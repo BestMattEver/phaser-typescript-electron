@@ -1,9 +1,10 @@
 {
-  "name": "phaser-3-typescript-electron-template",
-  "version": "1.0.0",
+  "name": "Touch_Hands_Arcade",
+  "version": "0.5.0",
   "main": "./main.js",
-  "author": "Marco Chierchia",
-  "license": "MIT",
+  "author": "Matthew Everhart",
+  "description": "An arcade game made with phaser, typescript and electron",
+  "license": "Exclusive",
   "scripts": {
     "copy": "yarn --cwd ../client build && node ./scripts/copy-from-client.js",
     "electron": "electron .",
@@ -26,7 +27,13 @@
     "appId": "your.id",
     "mac": {
       "category": "your.app.category.type"
-    }
+    },
+    "linux": {
+      "target": {
+          "target": "appimage",
+          "arch": ["armv7l"]
+      }
+  }
   },
   "nodeversion": "14.18.1",
   "npmversion": "8.13.2"
