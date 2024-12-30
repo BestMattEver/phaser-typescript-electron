@@ -4,7 +4,7 @@
   "main": "./main.js",
   "author": "Matthew Everhart",
   "description": "An arcade game made with phaser, typescript and electron",
-  "license": "Exclusive",
+  "license": "restricted",
   "scripts": {
     "copy": "yarn --cwd ../client build && node ./scripts/copy-from-client.js",
     "electron": "electron .",

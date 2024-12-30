@@ -59,10 +59,7 @@ export default class GameScoreTrackerScreen extends GameManager {
         const previousGameWidth = 250;
         const previousGameHeight = 150;
 
-        const nextGameIndex = Math.floor(Math.random() * this.possibleGames.length);
-        console.log('possible games: ', this .possibleGames);
-        console.log('NEXT GAME: ', this.possibleGames[nextGameIndex]);
-        super.setNextGame(this.possibleGames[nextGameIndex])
+        super.setRandomNextGame();
         
         allGamesPlayed.forEach((game, index) => {
             // const oldGameContainer = this.add.container()
@@ -115,27 +112,6 @@ export default class GameScoreTrackerScreen extends GameManager {
 
         super.create();
     };
-
-    // createTallyMarks(num: number, color: string, size: number, xLocation: number, yLocation: number) {
-    //     let adjustedY = yLocation;
-    //     for(let i = 0; i < num; i++) {
-    //         adjustedY = yLocation+((Math.floor(i/5)*size)+ (Math.floor(i/5)*50)); // the *20 is for spacing between rows
-    //         // const adjustedIndex = (i % 5) === 0 ? 1 : (i % 5);
-    //         const adjustedIndex = (i % 5);
-    //         console.log('index', i);
-    //         console.log('adjustedIndex', adjustedIndex);
-    //         console.log('adjustedY', adjustedY);
-    //         if(i > 0 && i % 5 === 0) { //the (i > 0) is to prevent starting cross ticks (0%5=0)
-    //             console.log('TICK MARK SIDEWAYS');
-    //             this.add.rectangle(xLocation+(adjustedIndex*(size/3))+35, adjustedY-size-10, size/5, size*1.7, Phaser.Display.Color.HexStringToColor(color).color)
-    //             .setOrigin(0.5, 0.5)
-    //             .setRotation(-0.90);
-    //         } else {
-    //             console.log('TICK MARK');
-    //             this.add.rectangle(xLocation+(adjustedIndex*size/3), adjustedY+40, size/5, size, Phaser.Display.Color.HexStringToColor(color).color);
-    //         }
-    //     }
-    // }
  
     update() {
         super.update();

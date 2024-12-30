@@ -6,6 +6,8 @@ let player1: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | undefined = und
 let player2: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody | undefined = undefined;
 let tealLasers: Phaser.Types.Physics.Arcade.ImageWithDynamicBody[] = [];
 let pinkLasers: Phaser.Types.Physics.Arcade.ImageWithDynamicBody[] = [];
+let pinkMeteors: Phaser.Types.Physics.Arcade.ImageWithDynamicBody[] = [];
+let tealMeteors: Phaser.Types.Physics.Arcade.ImageWithDynamicBody[] = [];
 const laserCoolDownMax: number = 30
 let pinkLaserCoolDown: number = laserCoolDownMax;
 let tealLaserCoolDown: number = laserCoolDownMax;
@@ -81,44 +83,39 @@ export default class ShootIncomingBaddies extends GameManager {
         
       }
 
-      createMeteors() {
-        if(stopGame) {return null}
-        const mp = this.physics.add.image((Math.random() * rightLimit)+leftLimit,-100, this.possiblePinkMeteors[Math.round(Math.random())])
-        .setDataEnabled()
-        .setData('color', 'pink')
-        .setBodySize(30,30);
+      launchMeteor() {
+        // find the meteors we'll be launching.
+        const tealToLaunch = tealMeteors.filter((meteor) => {
+            return meteor.data.list.ready === true;
+        })[0];
+        const pinkToLaunch = pinkMeteors.filter((meteor) => {
+            return meteor.data.list.ready === true;
+        })[0];
+        pinkToLaunch.setData('ready', false);
+        tealToLaunch.setData('ready', false);
 
-        const mt = this.physics.add.image((Math.random() * rightLimit)+leftLimit,-100, this.possibleTealMeteors[Math.round(Math.random())])
-        .setDataEnabled()
-        .setData('color', 'teal')
-        .setBodySize(30,30);
+        pinkToLaunch.setX((Math.random() * rightLimit)+leftLimit);
+        pinkToLaunch.setY(-100);
+        pinkToLaunch.setVelocityY(this.meteorSpeed);
 
-        mp.setVelocityY(this.meteorSpeed);
-        mt.setVelocityY(this.meteorSpeed);
-
-        this.allMeteors.push(mp);
-        this.allMeteors.push(mt);
-
-        this.tweens.add({
-            targets: mt,
-            rotation: (Math.random()*30) - 10,
-            duration: 6000,
-            loop: Infinity,
-        });
-        this.tweens.add({
-            targets: mp,
-            rotation: (Math.random()*30) - 10,
-            duration: 6000,
-            loop: Infinity,
-        });
+        tealToLaunch.setX((Math.random() * rightLimit)+leftLimit);
+        tealToLaunch.setY(-100);
+        tealToLaunch.setVelocityY(this.meteorSpeed);
       }
-
 
       create() {
         this.sound.stopAll();
         const anotherworld = this.sound.add('anotherworld', {loop: true, volume: 1});
         anotherworld.play();
 
+        //reset these every time the game is created again.
+        this.p1MeteorsDestroyed = 0;
+        this.p2MeteorsDestroyed = 0;
+        this.p1Collisions = 0;
+        this.p2Collisions = 0;
+        this.framesSinceLastUpdate = 0;
+
+        // PLAYER 1 --------------------TEAL--------------------------------
         player1 = this.physics.add.sprite(window.innerWidth/3,850, 'player_movement'); // TEAL
         player1.setDataEnabled();
         player1.setData('name', 'teal');
@@ -153,11 +150,38 @@ export default class ShootIncomingBaddies extends GameManager {
         this.anims.create(p1_idle);
         this.anims.create(p1_left);
         this.anims.create(p1_right);
+
+        // TEAL LASERS 
         const p1Laser_01 = this.physics.add.image(rightLimit + 1000, 1300, 'tealLaser').setDataEnabled().setData('color', 'teal').setData('ready', true).setBodySize(80,50);
         const p1Laser_02 = this.physics.add.image(rightLimit + 1000, 1300, 'tealLaser').setDataEnabled().setData('color', 'teal').setData('ready', true).setBodySize(80,50);
         const p1Laser_03 = this.physics.add.image(rightLimit + 1000, 1300, 'tealLaser').setDataEnabled().setData('color', 'teal').setData('ready', true).setBodySize(80,50);
         tealLasers = [p1Laser_01, p1Laser_02, p1Laser_03];
 
+        // TEAL METEORS
+        const p1Meteor_01 = this.physics.add.image(leftLimit-1000,-100, this.possibleTealMeteors[0])
+        .setDataEnabled()
+        .setData('color', 'teal')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        const p1Meteor_02 = this.physics.add.image(leftLimit-1000,-100, this.possibleTealMeteors[0])
+        .setDataEnabled()
+        .setData('color', 'teal')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        const p1Meteor_03 = this.physics.add.image(leftLimit-1000,-100, this.possibleTealMeteors[1])
+        .setDataEnabled()
+        .setData('color', 'teal')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        const p1Meteor_04 = this.physics.add.image(leftLimit-1000,-100, this.possibleTealMeteors[1])
+        .setDataEnabled()
+        .setData('color', 'teal')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        tealMeteors = [p1Meteor_01, p1Meteor_02, p1Meteor_03, p1Meteor_04];
+
+
+        // PLAYER 2 ----------------------- PINK -------------------------------
         player2 = this.physics.add.sprite(window.innerWidth-window.innerWidth/3,850, 'player_movement'); // PINK
         player2.setDataEnabled();
         player2.data.set('name','pink')
@@ -192,20 +216,47 @@ export default class ShootIncomingBaddies extends GameManager {
         this.anims.create(p2_idle);
         this.anims.create(p2_left);
         this.anims.create(p2_right);
+        
+        // PINK LASERS
         const p2Laser_01 = this.physics.add.image(rightLimit + 1000, 1300, 'pinkLaser').setDataEnabled().setData('color', 'pink').setData('ready', true).setBodySize(80,50);
         const p2Laser_02 = this.physics.add.image(rightLimit + 1000, 1300, 'pinkLaser').setDataEnabled().setData('color', 'pink').setData('ready', true).setBodySize(80,50);
         const p2Laser_03 = this.physics.add.image(rightLimit + 1000, 1300, 'pinkLaser').setDataEnabled().setData('color', 'pink').setData('ready', true).setBodySize(80,50);
         pinkLasers = [p2Laser_01, p2Laser_02, p2Laser_03];
 
+        // PINK METEORS
+        const p2Meteor_01 = this.physics.add.image(leftLimit-1000,-100, this.possiblePinkMeteors[0])
+        .setDataEnabled()
+        .setData('color', 'pink')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        const p2Meteor_02 = this.physics.add.image(leftLimit-1000,-100, this.possiblePinkMeteors[0])
+        .setDataEnabled()
+        .setData('color', 'pink')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        const p2Meteor_03 = this.physics.add.image(leftLimit-1000,-100, this.possiblePinkMeteors[1])
+        .setDataEnabled()
+        .setData('color', 'pink')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        const p2Meteor_04 = this.physics.add.image(leftLimit-1000,-100, this.possiblePinkMeteors[1])
+        .setDataEnabled()
+        .setData('color', 'pink')
+        .setData('ready', true)
+        .setBodySize(30,30);
+        pinkMeteors = [p2Meteor_01, p2Meteor_02, p2Meteor_03, p2Meteor_04];
+
         this.allLasers = [p2Laser_01, p2Laser_02, p2Laser_03, p1Laser_01, p1Laser_02, p1Laser_03];
+        this.allMeteors = [p2Meteor_01, p2Meteor_02, p2Meteor_03, p2Meteor_04, p1Meteor_01, p1Meteor_02, p1Meteor_03, p1Meteor_04] 
         this.allPlayers = [player1, player2];
 
         const meteorCreationTimer = this.time.addEvent({delay: 3000, callback: () => {
             if(!stopGame) {
-                this.createMeteors();
+                this.launchMeteor()
+                // this.createMeteors();
             }
-            // this.meteorSpeed = this.meteorSpeed + 10; // makes the meteors faster... ju8st in case too easy?
         }, callbackScope: this, loop: true});
+        
 
         super.create();
 
@@ -265,7 +316,10 @@ export default class ShootIncomingBaddies extends GameManager {
         if(stopGame) {return null}
         console.log(player.data.list.name , 'got smashed!');
         this.cameras.main.shake(1000, 0.005);
-        meteor.destroy();
+        meteor.setX(leftLimit - 1000);
+        meteor.setVelocityY(0);
+        meteor.setY(-100);
+        meteor.setData('ready', true);
 
         if(player.data.list.name === 'teal') {
             this.p1Collisions++;
@@ -318,7 +372,7 @@ export default class ShootIncomingBaddies extends GameManager {
 
             if(this.p2MeteorsDestroyed === winningMeteorCount) {
                 stopGame = true;
-                this.playerWins(player2, meteor);
+                this.playerWins(player2, hitText);
             }
         } else if(meteor.data.list.color === 'teal') {
             console.log('teal meteor destroyed!');
@@ -335,13 +389,16 @@ export default class ShootIncomingBaddies extends GameManager {
 
             if(this.p1MeteorsDestroyed === winningMeteorCount) {
                 stopGame = true;
-                this.playerWins(player1, meteor);
+                this.playerWins(player1, hitText);
             }
         }
         laser.setX(rightLimit + 1000);
         laser.setVelocityY(0);
         laser.setData('ready', true);
-        meteor.destroy();
+        meteor.setX(leftLimit - 1000);
+        meteor.setY(-100);
+        meteor.setVelocityY(0);
+        meteor.setData('ready', true);
       }
 
       recycleLasers() {
@@ -355,21 +412,34 @@ export default class ShootIncomingBaddies extends GameManager {
         }
       }
 
+      recycleMeteors() {
+        if(stopGame) {return null}
+        for(let i = 0; i < this.allMeteors.length; i++) {
+            if(this.allMeteors[i].body.y > window.innerHeight + 100) {
+                this.allMeteors[i].setData('ready', true);
+                this.allMeteors[i].setX(leftLimit - 1000);
+                this.allMeteors[i].setY(-100);
+                this.allMeteors[i].setVelocityY(0);
+            }
+        }
+      }
+
       update() {
         if(!stopGame) {
-            this.applyFriction(player1);
-            this.applyFriction(player2);
-            this.recycleLasers();
-            if(pinkLaserCoolDown > 0) {
-                pinkLaserCoolDown = pinkLaserCoolDown-1 ;
-            }
-            if(tealLaserCoolDown > 0) {
-                tealLaserCoolDown = tealLaserCoolDown-1;
-            }
+                this.applyFriction(player1);
+                this.applyFriction(player2);
+                this.recycleLasers();
+                this.recycleMeteors();
+                if(pinkLaserCoolDown > 0) {
+                    pinkLaserCoolDown = pinkLaserCoolDown-1 ;
+                }
+                if(tealLaserCoolDown > 0) {
+                    tealLaserCoolDown = tealLaserCoolDown-1;
+                }
 
-            player1?.anims.play('p1_idle');
-            player2?.anims.play('p2_idle');
-        }
+                player1?.anims.play('p1_idle');
+                player2?.anims.play('p2_idle');
+            }
         super.update();
       }
  

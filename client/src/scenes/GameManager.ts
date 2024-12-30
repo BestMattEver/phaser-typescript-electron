@@ -11,9 +11,9 @@ let redIndex: number = 1;
 let yellowIndex: number = 2;
 let blueIndex: number = 3;
 
-let gamesPlayed: PlayedGame[];
-
-let nextGame: string =  'StayOnTheIsland';
+const possibleGames = ['StayOnTheIsland', 'ShootIncomingBaddies'];
+let gamesPlayed: PlayedGame[] = [];
+let nextGame: string;
 
 // this is poorly named it doesnt really manage the GAME, it manages... common scene elements, like the controls and a timer. maybe other things? 
 export default class GameManager extends Phaser.Scene {
@@ -60,8 +60,6 @@ export default class GameManager extends Phaser.Scene {
   yellowLeftSound: Phaser.Sound.BaseSound;
   yellowRightSound: Phaser.Sound.BaseSound;
 
-
-
   anyButtonPressed: boolean | null = true;
   timeSinceControllerTouch: number = 0;
   startProgress: number = 0;
@@ -84,6 +82,24 @@ export default class GameManager extends Phaser.Scene {
   }
   setNextGame(game: string) {
     nextGame = game;
+  }
+  setRandomNextGame() {
+    //never play the same game twice by removing the previously played game from the possible game options.
+    const gamesPlayed = this.getGamesPlayed();
+    let possibleGamesWithoutLast: string[];
+    if(gamesPlayed.length > 0) {
+      const previousGame = gamesPlayed[0].gameTitle || 'none';
+      possibleGamesWithoutLast = possibleGames.filter((game) => {
+          return game !== previousGame;
+      });
+    } else {
+      possibleGamesWithoutLast = possibleGames;
+    }
+
+  // pick a random game from the remainder
+    const nextGameIndex = Math.floor(Math.random() * possibleGamesWithoutLast.length);
+    // set random game to be the next game.
+    this.setNextGame(possibleGamesWithoutLast[nextGameIndex]);
   }
 
   setGreenIndex(index: number) {
@@ -165,14 +181,10 @@ export default class GameManager extends Phaser.Scene {
     console.log('player 2 B - gameManager');
   }
 
-
   preload() {
 
     this.startProgress = 0;
     // action array hase each action twice so each action can map to 2 seperate controls
-    
-    // ACTUALLY in playtesting it turns out that having 2 controls for each action is too confusing
-    // in an already confusing situation. try just one control for each action and a bad bonk sound for unused controls?
     this.actionArray = [
       this.player1Up,
       this.player1Down,
@@ -277,8 +289,6 @@ export default class GameManager extends Phaser.Scene {
     this.load.audio('yellowDownSound', 'src/assets/sounds/controlSounds/yellowSounds/yellowDown.mp3');
     this.load.audio('yellowLeftSound', 'src/assets/sounds/controlSounds/yellowSounds/yellowLeft.mp3');
     this.load.audio('yellowRightSound', 'src/assets/sounds/controlSounds/yellowSounds/yellowRight.mp3');
-   
-
     
   }
 
@@ -287,6 +297,8 @@ export default class GameManager extends Phaser.Scene {
     this.buttonToActionMap = mapGamepadsToActionIndex();
     //generic one second timer to keep track of game time.
     const oneSecondTimer = this.time.addEvent({delay: 1000, callback: () => { this.sceneTimeSeconds++ }, callbackScope: this, loop: true});
+    // set a random game to play next.
+    this.setRandomNextGame();
 
     //green control images in phaser
     const gJoyDown = this.add.image(0, 32, 'GJoyDown');

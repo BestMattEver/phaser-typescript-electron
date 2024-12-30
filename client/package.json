@@ -13,7 +13,7 @@
   },
   "author": "Matthew Everhart",
   "description": "An arcade game made with phaser, typescript and electron",
-  "license": "Exclusive",
+  "license": "restricted",
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.9",
     "@rollup/plugin-commonjs": "^22.0.0",

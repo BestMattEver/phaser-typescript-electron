@@ -22,10 +22,12 @@ game.scene.add('GameScoreTrackerScreen', GameScoreTrackerScreen);
 
 // const sceneArray = ['ConfigureControls', 'TitleScreen', 'StayOnTheIsland'];
 // const sceneArray = ['TitleScreen', 'ShootIncomingBaddies'];
-const sceneArray = ['ShootIncomingBaddies'];
+// const sceneArray = ['ShootIncomingBaddies'];
+const sceneArray = ['TitleScreen'];
 let sceneIndex = 0;
 
 const advanceScene = () => {
+
   game.scene.stop(sceneArray[sceneIndex]);
   if(sceneIndex === sceneArray.length -1) {
     sceneIndex = 0;

@@ -22,8 +22,8 @@ const createWindow = () => {
     },
   });
 
-  //this controls if we have the inspector open or not
   mainWindow.setMenuBarVisibility(isDevelopment);
+  // mainWindow.setMenuBarVisibility(false);
   
   // and load the index.html of the app.
   //mainWindow.loadFile(__dirname, "./app/index.html")
