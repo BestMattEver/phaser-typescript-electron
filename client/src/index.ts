@@ -6,6 +6,7 @@ import ShootIncomingBaddies from './scenes/games/ShootIncomingBaddies';
 import TitleScreen from './scenes/TitleScreen';
 import ConfigureControls from './scenes/ConfigureControls';
 import GameScoreTrackerScreen from './scenes/GameScoreTrackerScreen';
+import PressYourButtons from './scenes/games/PressYourButtons';
 
 const game = new Phaser.Game(
   Object.assign(config, {
@@ -13,17 +14,22 @@ const game = new Phaser.Game(
   }),
 );
 
+// MENU SCREENS
 game.scene.add('ConfigureControls', ConfigureControls);
 game.scene.add('TitleScreen', TitleScreen);
-game.scene.add('GetToTheChoppa', GetToTheChoppa); //depreciated / template
-game.scene.add('StayOnTheIsland', StayOnTheIsland);
-game.scene.add('ShootIncomingBaddies', ShootIncomingBaddies);
 game.scene.add('GameScoreTrackerScreen', GameScoreTrackerScreen);
 
-// const sceneArray = ['ConfigureControls', 'TitleScreen', 'StayOnTheIsland'];
+game.scene.add('GetToTheChoppa', GetToTheChoppa); //depreciated / template
+
+// GAMES
+game.scene.add('StayOnTheIsland', StayOnTheIsland);
+game.scene.add('ShootIncomingBaddies', ShootIncomingBaddies);
+game.scene.add('PressYourButtons', PressYourButtons);
+
+const sceneArray = ['ConfigureControls', 'TitleScreen'];
 // const sceneArray = ['TitleScreen', 'ShootIncomingBaddies'];
-// const sceneArray = ['ShootIncomingBaddies'];
-const sceneArray = ['TitleScreen'];
+// const sceneArray = ['PressYourButtons'];
+// const sceneArray = ['TitleScreen'];
 let sceneIndex = 0;
 
 const advanceScene = () => {

@@ -1,4 +1,5 @@
 import GameManager from "./GameManager";
+import { Color } from 'phaser';
 
 export default class GameScoreTrackerScreen extends GameManager {
     constructor() {
@@ -11,8 +12,10 @@ export default class GameScoreTrackerScreen extends GameManager {
     GCLightOrange = 'ff9b51';
     GCYellow = 'ffbf4c';
     GCBlue = '00c1ff';
+    pinkColor = new Phaser.Display.Color(242, 166, 190);
+    tealColor = new Phaser.Display.Color(111, 196, 169);
 
-    possibleGames = ['StayOnTheIsland', 'ShootIncomingBaddies'];
+    possibleGames = ['StayOnTheIsland', 'ShootIncomingBaddies', 'PressYourButtons'];
 
     preload() {
         super.preload();
@@ -26,6 +29,9 @@ export default class GameScoreTrackerScreen extends GameManager {
             ]
         );
         this.load.image('stayOnIslandScreenshot', 'src/assets/images/stayOnTheIsland/stay_on_the_island_screenshot.png');
+        this.load.image('PressYourButtonsScreenshot', 'src/assets/images/PressYourButtons/pressYourButtons_Screenshot.png');
+        this.load.image('ShootIncomingBaddiesScreenshot', 'src/assets/images/shootIncomingBaddies/ShootIncomingBaddies_screenshot.png');
+        console.log('preloading done?');
     };
 
     create() {
@@ -42,6 +48,8 @@ export default class GameScoreTrackerScreen extends GameManager {
 
         const possibleGameScreenShots = {
             StayOnTheIsland: 'stayOnIslandScreenshot',
+            ShootIncomingBaddies: 'ShootIncomingBaddiesScreenshot',
+            PressYourButtons: 'PressYourButtonsScreenshot'
         };
 
 
@@ -62,15 +70,15 @@ export default class GameScoreTrackerScreen extends GameManager {
         super.setRandomNextGame();
         
         allGamesPlayed.forEach((game, index) => {
-            // const oldGameContainer = this.add.container()
 
             let yValue = Math.floor(index/3);
-            const tintValue = Phaser.Display.Color.HexStringToColor(game.winner.toUpperCase() === 'PINK' ? '#ff5050' : '#50ff50').color;
+            const tintValue = game.winner.toUpperCase() === 'PINK' ? this.pinkColor.color : this.tealColor.color;
             //width of image*number of images + 20px gutter*number of previous images-1+starting width
             const adjustedIndex = index % 3;
             const xLocation = ((adjustedIndex+1)*previousGameWidth)+((adjustedIndex-1)*20)+(window.innerWidth/2-((previousGameWidth/2)+20+previousGameWidth))-100;
             //height of start of image array+height of image * number of current row + 20px gutter * number of current row
-            const yLocation = 300+(previousGameHeight*yValue)+(20*yValue)
+            const yLocation = 300+(previousGameHeight*yValue)+(20*yValue);
+            console.log('gmae: ',game.gameTitle);
             this.add.image(xLocation, yLocation, possibleGameScreenShots[game.gameTitle as keyof typeof possibleGameScreenShots])
             .setDisplaySize(previousGameWidth, previousGameHeight)
             .setTint(tintValue);
@@ -84,7 +92,7 @@ export default class GameScoreTrackerScreen extends GameManager {
         });
 
         const winnerText = this.add.text(window.innerWidth/2, 100, `${lastGamePlayed.winner.toUpperCase()} WON!`,
-            {fontSize: '120px', color: lastGamePlayed.winner.toUpperCase() === 'PINK' ? '#ff5050' : '#50ff50', stroke: '#ffffff', strokeThickness: 10}
+            {fontSize: '120px', color: lastGamePlayed.winner.toUpperCase() === 'PINK' ? this.pinkColor.rgba : this.tealColor.rgba, stroke: '#ffffff', strokeThickness: 10}
         ).setOrigin(0.5, 0.5);
         this.tweens.add({
             targets: winnerText,
@@ -96,19 +104,17 @@ export default class GameScoreTrackerScreen extends GameManager {
         });
 
         const tealWinsText = this.add.text(240, 200, `Teal wins:`,
-            {fontSize: '70px', color: '#50ff50', stroke: '#000000', strokeThickness: 10}
+            {fontSize: '70px', color: this.tealColor.rgba , stroke: '#000000', strokeThickness: 10}
         ).setOrigin(0.5, 0.5);
         const tealWinsTextNum = this.add.text(240, 400, `${tealWinsNum}`,
-            {fontSize: '120px', color: '#50ff50', stroke: '#000000', strokeThickness: 10}
+            {fontSize: '120px', color: this.tealColor.rgba, stroke: '#000000', strokeThickness: 10}
         ).setOrigin(0.5, 0.5);
-        // this.createTallyMarks(tealWinsNum, '#50ff50', 70, 230, 300);
         const pinkWinsText = this.add.text(window.innerWidth-220, 200, `Pink wins:`,
-            {fontSize: '70px', color: '#ff5050', stroke: '#000000', strokeThickness: 10}
+            {fontSize: '70px', color: this.pinkColor.rgba, stroke: '#000000', strokeThickness: 10}
         ).setOrigin(0.5, 0.5);
         const pinkWinsTextNum = this.add.text(window.innerWidth-220, 400, `${pinkWinsNum}`,
-            {fontSize: '120px', color: '#ff5050', stroke: '#000000', strokeThickness: 10}
+            {fontSize: '120px', color: this.pinkColor.rgba, stroke: '#000000', strokeThickness: 10}
         ).setOrigin(0.5, 0.5);
-        // this.createTallyMarks(pinkWinsNum, '#ff5050', 70, window.innerWidth-220, 300);
 
         super.create();
     };

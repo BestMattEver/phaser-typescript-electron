@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
+const fs = require('fs');
 
 require("@electron/remote/main").initialize();
 
@@ -15,10 +16,12 @@ const createWindow = () => {
     width: 1920,
     height: 1080,
     webPreferences: {
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-      contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
+      nodeIntegration: false,
+      // nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
+      // contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
       enableRemoteModule: true,
       preload: path.join(__dirname, "preload.js"),
+      sandbox: false,
     },
   });
 
@@ -56,3 +59,9 @@ app.on("window-all-closed", () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+
+// this appends text to a file. it is called from the client side of the electron app.
+ipcMain.on('writeToFile', (event, text) => {
+  fs.appendFileSync('games_played.csv', text);
+});

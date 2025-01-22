@@ -19,7 +19,7 @@
     "electron-builder": "^23.3.3"
   },
   "dependencies": {
-    "@electron/remote": "^2.0.8",
+    "@electron/remote": "^2.1.2",
     "cheerio": "^1.0.0-rc.12",
     "fs-extra": "^10.1.0"
   },
@@ -30,10 +30,12 @@
     },
     "linux": {
       "target": {
-          "target": "appimage",
-          "arch": ["armv7l"]
+        "target": "appimage",
+        "arch": [
+          "armv7l"
+        ]
       }
-  }
+    }
   },
   "nodeversion": "14.18.1",
   "npmversion": "8.13.2"

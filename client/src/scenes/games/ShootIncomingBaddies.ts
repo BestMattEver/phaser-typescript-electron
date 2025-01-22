@@ -38,6 +38,10 @@ export default class ShootIncomingBaddies extends GameManager {
       p2Collisions: number = 0;
       pinkEmitter: GameObjects.Particles.ParticleEmitter;
       tealEmitter: GameObjects.Particles.ParticleEmitter;
+      startTime: Date = new Date(Date.now());
+
+      pinkColor = new Phaser.Display.Color(242, 166, 190);
+      tealColor = new Phaser.Display.Color(111, 196, 169);
 
       preload() {
 
@@ -49,6 +53,7 @@ export default class ShootIncomingBaddies extends GameManager {
         stopGame = false;
         leftLimit = 200
         rightLimit = window.innerWidth-200;
+        this.startTime = new Date(Date.now());
         
         this.scrambleControls();
         this.changeBackgroundColor('#363764');
@@ -253,7 +258,6 @@ export default class ShootIncomingBaddies extends GameManager {
         const meteorCreationTimer = this.time.addEvent({delay: 3000, callback: () => {
             if(!stopGame) {
                 this.launchMeteor()
-                // this.createMeteors();
             }
         }, callbackScope: this, loop: true});
         
@@ -483,8 +487,8 @@ export default class ShootIncomingBaddies extends GameManager {
         // figure out winning color
         const winningColor = winner.data.list.name;
         let hexCode = '';
-        if(winningColor === 'teal') {hexCode = '#50ff50'}
-        else if (winningColor === 'pink') {hexCode = '#ff5050'}
+        if(winningColor === 'teal') {hexCode = this.tealColor.rgba}
+        else if (winningColor === 'pink') {hexCode = this.pinkColor.rgba}
 
         const winnerText = this.add.text(winner.body.x+50, winner.body.y-100, `${winningColor.toUpperCase()} WINS!`,
             {fontSize: '100px', color: hexCode, stroke: '#cccccc', strokeThickness: 10}
@@ -508,7 +512,16 @@ export default class ShootIncomingBaddies extends GameManager {
                 });
             } else if (this.gameEndTimer === 8) {
                 this.time.removeEvent(winTimer)
-                super.addGamePlayed({gameTitle: 'ShootIncomingBaddies', winner: winningColor})
+                const endTime = new Date(Date.now());
+                super.addGamePlayed(
+                    {
+                        gameTitle: 'ShootIncomingBaddies',
+                        winner: winningColor,
+                        startTime: this.startTime,
+                        endtime: endTime,
+                        playTime: (endTime.getTime() - this.startTime.getTime()) / 1000
+                    }
+                );
                 super.goToScene('GameScoreTrackerScreen');
             }
 

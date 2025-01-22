@@ -4,6 +4,9 @@ import { getGamepads2, mapGamepadsToActionIndex, CondensedGamepadInputs, anyButt
 export interface PlayedGame {
   gameTitle: string,
   winner: string,
+  startTime: Date,
+  endtime: Date,
+  playTime: number;
 };
 
 let greenIndex: number = 0;
@@ -11,7 +14,10 @@ let redIndex: number = 1;
 let yellowIndex: number = 2;
 let blueIndex: number = 3;
 
-const possibleGames = ['StayOnTheIsland', 'ShootIncomingBaddies'];
+const pinkColor = Phaser.Display.Color.GetColor(242, 166, 190);
+const tealColor = Phaser.Display.Color.GetColor(111, 196, 169);
+
+const possibleGames = ['StayOnTheIsland', 'ShootIncomingBaddies', 'PressYourButtons'];
 let gamesPlayed: PlayedGame[] = [];
 let nextGame: string;
 
@@ -70,6 +76,27 @@ export default class GameManager extends Phaser.Scene {
 
   getGamesPlayed() {
     return gamesPlayed
+  };
+  writeGamesPlayedToFile() {
+    const csvString =
+      // [
+      //   "game_name",
+      //   "winner",
+      //   "start_time",
+      //   "end_time",
+      //   "play_time",
+      // ],
+      gamesPlayed.reverse().map((game) => {
+        return [game.gameTitle, game.winner, game.startTime, game.endtime, game.playTime]
+      })
+    .map((e => e.join(",")))
+    .join("XXX");
+    console.log(csvString);
+  
+    const gameInput = document.getElementById('gamesToSave') as HTMLInputElement;
+    gameInput!.value = csvString;
+    gameInput?.click();
+
   };
   setGamesPlayed(games: PlayedGame[]) {
     gamesPlayed = games;

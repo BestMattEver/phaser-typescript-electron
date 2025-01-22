@@ -24,5 +24,9 @@
     "vite": "^2.9.8"
   },
   "nodeversion": "14.18.1",
-  "npmversion": "8.13.2"
+  "npmversion": "8.13.2",
+  "dependencies": {
+    "@types/filesystem": "^0.0.36",
+    "fs-js": "^1.0.6"
+  }
 }

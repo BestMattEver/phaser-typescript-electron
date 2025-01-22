@@ -23,6 +23,10 @@ export default class StayOnTheIsland extends GameManager {
       titleTimer: number = 0;
       gameEndTimer: number = 0;
       stopGame: boolean = false;
+      startTime: Date = new Date(Date.now());
+
+      pinkColor = new Phaser.Display.Color(242, 166, 190);
+      tealColor = new Phaser.Display.Color(111, 196, 169);
 
 
       preload() {
@@ -34,6 +38,7 @@ export default class StayOnTheIsland extends GameManager {
         this.gameEndTimer = 0;
         this.stopGame = false;
         this.hexFallTimer = 0;
+        this.startTime = new Date(Date.now());
         
         this.scrambleControls();
         this.changeBackgroundColor('#00c1ff');
@@ -85,9 +90,6 @@ export default class StayOnTheIsland extends GameManager {
         let hexRowA4 = [];
         let hexRowA5 = [];
         let hexRowA6 = [];
-
-        // const exampleHex = this.physics.add.image(100, 100, 'LAVA');
-        // console.log(exampleHex.getBottomCenter());
         
         for(let i = 6; i >= 0; i--) {
             //up left row
@@ -480,7 +482,7 @@ export default class StayOnTheIsland extends GameManager {
     // you could combine/refactor these two functions SO easily. but it would just take time and we dont have it. sorry bruh. next pass.
     pinkWins() {
         const pinkWinText = this.add.text(player2?.body.x+50, player2?.body.y-100, "PINK WINS!",
-            {fontSize: '100px', color:'#ff5050', stroke: '#cccccc', strokeThickness: 10}
+            {fontSize: '100px', color: this.pinkColor.rgba, stroke: '#ffffff', strokeThickness: 10}
         ).setOrigin(0.5, 0.5).setRotation(0.3);
         pinkWinText.setVisible(false);
 
@@ -500,8 +502,17 @@ export default class StayOnTheIsland extends GameManager {
                     yoyo: true, 
                 });
             } else if (this.gameEndTimer === 12) {
-                this.time.removeEvent(pinkwinsTimer)
-                super.addGamePlayed({gameTitle: 'StayOnTheIsland', winner: 'pink'})
+                this.time.removeEvent(pinkwinsTimer);
+                const endTime = new Date(Date.now());
+                super.addGamePlayed(
+                    {
+                        gameTitle: 'StayOnTheIsland',
+                        winner: 'pink',
+                        startTime: this.startTime,
+                        endtime: endTime,
+                        playTime: (endTime.getTime() - this.startTime.getTime()) / 1000
+                    }
+                );
                 super.goToScene('GameScoreTrackerScreen');
             }
 
@@ -511,7 +522,7 @@ export default class StayOnTheIsland extends GameManager {
 
     tealWins() {
         const tealWinText = this.add.text(player1?.body.x+50, player1?.body.y-100, "TEAL WINS!",
-            {fontSize: '100px', color:'#50ff50', stroke: '#cccccc', strokeThickness: 10}
+            {fontSize: '100px', color: this.tealColor.rgba, stroke: '#ffffff', strokeThickness: 10}
         ).setOrigin(0.5,0.5).setRotation(0.3);
         tealWinText.setVisible(false);
         const tealwinstimer = this.time.addEvent({delay: 1000, callback:() => {
@@ -531,7 +542,16 @@ export default class StayOnTheIsland extends GameManager {
                 });
             } else if (this.gameEndTimer === 12) {
                 this.time.removeEvent(tealwinstimer);
-                super.addGamePlayed({gameTitle: 'StayOnTheIsland', winner: 'teal'})
+                const endTime = new Date(Date.now());
+                super.addGamePlayed(
+                    {
+                        gameTitle: 'StayOnTheIsland',
+                        winner: 'teal',
+                        startTime: this.startTime,
+                        endtime: endTime,
+                        playTime: (endTime.getTime() - this.startTime.getTime()) / 1000
+                    }
+                );
                 super.goToScene('GameScoreTrackerScreen');
             }
 

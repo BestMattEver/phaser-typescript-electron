@@ -49,6 +49,18 @@
   resolved "https://registry.npmjs.org/@types/estree/-/estree-0.0.39.tgz"
   integrity sha512-EYNwp3bU+98cpU4lAWYYL7Zz+2gryWH1qbdDTidVd6hkiR6weksdbMadyXKXNPEkQFhXM+hVO9ZygomHXp+AIw==
 
+"@types/filesystem@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@types/filesystem/-/filesystem-0.0.36.tgz#7227c2d76bfed1b21819db310816c7821d303857"
+  integrity sha512-vPDXOZuannb9FZdxgHnqSwAG/jvdGM8Wq+6N4D/d80z+D4HWH+bItqsZaVRQykAn6WEVeEkLm2oQigyHtgb0RA==
+  dependencies:
+    "@types/filewriter" "*"
+
+"@types/filewriter@*":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@types/filewriter/-/filewriter-0.0.33.tgz#d9d611db9d9cd99ae4e458de420eeb64ad604ea8"
+  integrity sha512-xFU8ZXTw4gd358lb2jw25nxY9QAgqn2+bKKjKOYfNCzN4DKCFetK7sPtrlpg66Ywe3vWY9FNxprZawAh9wfJ3g==
+
 "@types/node@^17.0.31":
   version "17.0.31"
   resolved "https://registry.npmjs.org/@types/node/-/node-17.0.31.tgz"
@@ -217,6 +229,11 @@ eventemitter3@^4.0.7:
   version "4.0.7"
   resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-4.0.7.tgz"
   integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
+
+fs-js@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/fs-js/-/fs-js-1.0.6.tgz#ff71521028781393c67dea891a883abe04a100ac"
+  integrity sha512-Y4MPgFBY/6QIFvGzWD/TGbcgFEOfyRfWFRHpGERjmlqe5aHP2inb1M2BiEzITu6rxjDeEkV5bbwkHTjH6BadEA==
 
 fs.realpath@^1.0.0:
   version "1.0.0"

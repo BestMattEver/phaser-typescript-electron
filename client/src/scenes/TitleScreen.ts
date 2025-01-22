@@ -20,6 +20,9 @@ export default class TitleScreen extends GameManager {
     explainerContainer2: Phaser.GameObjects.Container;
     explainerContainer3: Phaser.GameObjects.Container;
 
+    pinkColor = new Phaser.Display.Color(242, 166, 190);
+    tealColor = new Phaser.Display.Color(111, 196, 169);
+
     preload() {
         super.preload();
         this.scrambleControls();
@@ -51,6 +54,7 @@ export default class TitleScreen extends GameManager {
             const bgMusic = this.sound.add('Title_BG_music', {loop: true, volume: .5});
             bgMusic.play();
         } 
+        super.writeGamesPlayedToFile();
         super.setGamesPlayed([]);
 
         const orangeSection = this.add.rectangle(0,-400,2000,2000,0xff6538);
@@ -59,7 +63,7 @@ export default class TitleScreen extends GameManager {
         this.textTouch = this.add.text(-200, 500, "TOUCH",
             {
                 font: '900 124px ',
-                color: `#${this.GCBlue}`,
+                color: this.tealColor.rgba,
                 stroke: '#ffffff',
                 strokeThickness: 40,
             }
@@ -67,7 +71,7 @@ export default class TitleScreen extends GameManager {
         this.textHands = this.add.text(800, -500, "HANDS",
             {
                 font: '900 124px ',
-                color: `#${this.GCBlue}`,
+                color: this.pinkColor.rgba,
                 stroke: '#ffffff',
                 strokeThickness: 40,
             }
@@ -100,8 +104,8 @@ export default class TitleScreen extends GameManager {
         });
         this.tweens.add({
             targets: this.textArcade,
-            x: 150,
-            y: 390,
+            x: 110,
+            y: 430,
             duration: 250,
             delay: 400,
         });
@@ -109,7 +113,7 @@ export default class TitleScreen extends GameManager {
         
         // explainer 1
         const explainer1Text1 = this.add.text(0,0, 'The controls are scrambled!',
-            {font: '900 32px ', color: `#${this.GCYellow}`, stroke: '#000000', strokeThickness: 5},
+            {font: '900 32px ', color: `#ffffff`, stroke: '#000000', strokeThickness: 5},
         );
         const explainer1Pic = this.add.sprite(250,150, 'titleScreenSprites');
         const scrambleAnimation = {
@@ -151,8 +155,8 @@ export default class TitleScreen extends GameManager {
         });
 
         // explainer 2
-        const explainer2Text1 = this.add.text(0,0, 'Play competitive minigames!', 
-            {font: '900 32px ', color: `#${this.GCLightOrange}`, stroke: '#000000', strokeThickness: 5},
+        const explainer2Text1 = this.add.text(100,0, 'Play minigames!', 
+            {font: '900 32px ', color: `#ffffff`, stroke: '#000000', strokeThickness: 5},
         );
         const explainer2Pic = this.add.sprite(250,150, 'titleScreenSprites');
         const gamesAnimation = {
@@ -160,8 +164,9 @@ export default class TitleScreen extends GameManager {
             defaultTextureKey: "titleScreenSprites",
             duration: 1,
             frames: [
-                { frame: 35, duration: 5000},
-                { frame: 36, duration: 5000},
+                { frame: 35, duration: 3300},
+                { frame: 36, duration: 3300},
+                { frame: 37, duration: 3300},
             ],
             repeat: -1,
         };
@@ -178,10 +183,13 @@ export default class TitleScreen extends GameManager {
 
         // explainer 3
         const explainer3Text1 = this.add.text(95,0, 'You will probably', 
-            {font: '900 32px ', color: `#${this.GCOrange}`, stroke: '#000000', strokeThickness: 5},
+            {font: '900 32px ', color: `#ffffff`, stroke: '#000000', strokeThickness: 5},
         );
-        const explainer3Text2 = this.add.text(35,250, 'TOUCH HANDS', 
-            {font: '900 64px ', color: `pink`, stroke: `#${this.GCRed}`, strokeThickness: 5},
+        const explainer3Text2 = this.add.text(35,250, 'TOUCH', 
+            {font: '900 64px ', color: this.tealColor.rgba, stroke: '#ffffff', strokeThickness: 10},
+        );
+        const explainer3Text3 = this.add.text(250,250, 'HANDS', 
+            {font: '900 64px ', color: this.pinkColor.rgba, stroke: '#ffffff', strokeThickness: 10},
         );
         const explainer3Pic = this.add.sprite(250,150, 'titleScreenSprites');
         const handsAnimation = {
@@ -203,7 +211,7 @@ export default class TitleScreen extends GameManager {
         this.anims.create(handsAnimation);
         this.anims.play('hands', explainer3Pic);
         this.explainerContainer3 = this.add.container(2500,500);
-        this.explainerContainer3.add([explainer3Pic, explainer3Text1, explainer3Text2]);
+        this.explainerContainer3.add([explainer3Pic, explainer3Text1, explainer3Text2, explainer3Text3]);
         this.tweens.add({
             targets: this.explainerContainer3,
             x: 850,
